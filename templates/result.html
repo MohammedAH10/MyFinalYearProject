@@ -1,0 +1,62 @@
+<!-- templates/result.html -->
+{% extends "base.html" %}
+
+{% block title %}MRI Analysis Result{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <h1 class="text-3xl font-bold text-blue-600 mb-4">Analysis Results</h1>
+        <p class="text-sm text-gray-500 mb-4">Performed on: {{ analysis.created_at }}</p>
+        
+        <div class="grid grid-cols-1 gap-12 mb-6">
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Segmentation Result</h2>
+                <div class="border rounded-lg overflow-hidden">
+                    <img src="{{ '/' + analysis.result_path }}" alt="Segmentation Result" class="w-full h-auto">
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-blue-50 rounded-lg p-4 mb-6">
+            <h2 class="text-lg font-semibold text-blue-800 mb-2">Classification Result</h2>
+            <div class="flex items-center justify-between">
+                <p class="text-gray-800">
+                    <span class="font-medium">Detected: </span>
+                    <span class="text-lg font-bold {% if analysis.classification == 'no_tumor' %}text-green-600{% else %}text-red-600{% endif %}">
+                        {{ analysis.classification.replace('_', ' ').title() }}
+                    </span>
+                </p>
+                <div class="bg-white rounded-full py-1 px-3 shadow-sm">
+                    <span class="text-sm font-medium">Confidence: </span>
+                    <span class="text-sm font-bold 
+                        {% if analysis.confidence > 0.9 %}text-green-600
+                        {% elif analysis.confidence > 0.7 %}text-yellow-600
+                        {% else %}text-red-600{% endif %}">
+                        {{ (analysis.confidence * 100) | round(1) }}%
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-50 rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Medical Summary</h2>
+            <div class="prose text-gray-700">
+                {{ analysis.summary | safe }}
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-500">
+                <p>This analysis is provided for informational purposes only and should not be considered a medical diagnosis. Please consult with a healthcare professional for proper medical advice.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex justify-between">
+        <a href="/" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">
+            New Analysis
+        </a>
+        <a href="/history" class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg">
+            View History
+        </a>
+    </div>
+</div>
+{% endblock %}
